@@ -1,0 +1,142 @@
+---
+title: "Assignment-3"
+author: "Rachana"
+date: "2022-11-12"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+
+
+library("mlbench")
+
+```{r}
+set.seed(2017) 
+X=runif(100)*10 
+Y=X*4+3.45 
+Y=rnorm(100)*0.29*Y+Y 
+```
+
+```{r}
+plot(Y~X)
+```
+# Based on the plot do you think we can fit a linear model to explain Y based on X?
+#yes, i think we can fit a linear model to explain Y based on X , as X tends to increase y also increases, hence we can understsnd that there is a positive correlation between X&Y.
+
+
+#Construct a simple linear model of Y based on X. Write the equation that explains Y based on X. What is the accuracy of this model? 
+```{r}
+model <- lm(Y~X)
+summary(model)
+```
+
+#The equation that explains Y based on X is  
+
+$${\text Y = 4.4655 *  X  + 3.6108}$$
+
+#What is the accuracy of this model?
+
+#we can give the accuracy of the model by Multiple R - Squared Value which is 0.6517 indicating that the model is 65.17% accurate.
+
+#Explain the relation between the Coefficient of Determination - R Squared of the model above with that to the correlation coefficient of X and Y
+```{r}
+#Correlation coefficient of X and Y
+cor(Y,X)^2
+#Coefficient of Determination - R Squared
+summary(model)$r.squared
+```
+#In simple linear regression models which consist of only one independent variable and one dependent variable,  square of the correlation is equal to the coefficient of determination.  Both the values of the coefficient of determination (r2)  and the correlation coefficient of Y and X would be same.
+
+#We  will  use  the  ‘mtcars’  dataset  for  this  question.  The  dataset  is  already  included  in  your  R  distribution. The dataset shows some of the characteristics of different cars. The following shows few samples (i.e. the first 6 rows) of the dataset. The description of the dataset can be found here. 
+ 
+
+```{r}
+head(mtcars)
+```
+
+```{r}
+plot(mtcars$hp~mtcars$wt)
+model1=lm(formula=hp~wt, data=mtcars)
+summary(model1)
+```
+
+#James thinks that horse power (hp) of a car can be determined based on the weight of the car (wt) where we got the accuracy as 43.39% of the variability in horse power (hp) on weight(wt)
+
+
+#Determining the Horse Power Basis the Mile Per Gallon, chris thoughts
+```{r}
+model2 <- lm(hp~mpg,data=mtcars)
+summary(model2)
+```
+#Whereas Chris thinks that horse power (hp) of a car can be determined based on the mile per gallon (mpg), from the linear model we built  we  got to see that 60.24% of the variability in horse power (hp) can be determined by the mile per gallon (mpg).
+
+#hence from the results we got, we can say that hp can be determined based on mile per gallon(chrish thoughts) as it has more accuracy than weight(james).
+
+
+#2(b). Build a model that uses the number of cylinders (cyl) and the mile per gallon (mpg) values of a car to predict the car Horse Power (hp)
+```{r}
+model3 <- lm(hp~cyl+mpg,data=mtcars)
+summary(model3)
+```
+#Using this model, what is the estimated Horse Power of a car with 4 cylinder and mpg of 22
+```{r}
+predict(model3,data.frame(cyl=c(4),mpg=c(22)))
+```
+#The estimated horsepower (hp) with 4 cylinders (cyl) and with a mpg of 22 is "88.93618 hp".
+
+
+#3. For this question, we are going to use BostonHousing dataset. The dataset is in ‘mlbench’ package, so we first need to instal the package, call the library and the load the dataset using the following commands 
+
+
+
+
+#a) Build a model to estimate the median value of owner-occupied homes (medv)based on the following  variables:  crime  crate  (crim),  proportion  of  residential  land  zoned  for  lots  over  25,000  sq.ft  (zn),  the  local  pupil-teacher  ratio  (ptratio)  and  weather  the  whether  the  tract  bounds Chas River(chas). Is this an accurate model? library(mlbench)
+```{r}
+library(mlbench)
+data(BostonHousing) 
+
+model4 <- lm(medv~crim+zn+ptratio+chas,data=BostonHousing)
+summary(model4)
+```
+#Is this an accurate model?
+
+#accuracy is 0.3599.  as the accuracy is less wwe can tel, that it is not considered as a good model and dosen't make good predicitions for business problems.
+
+
+
+
+#3(b)(i). Imagine two houses that are identical in all aspects but one bounds the Charles River and the other does not. Which one is more expensive and by how much?
+
+#Based on the above model, price of the house going to increase if the house is bound to the Charles River 
+
+#To identify  home which is more expensive comparing the one that bounds the Chas river and the one's do not, we consider the coefficient of the chas value in the above linear model. The coefficient is 4.58393, indicates that the houses that bounds by the Chas river are 4.58393 times more expensive than the houses which do not bounds by the river.
+
+#Additionally, the dataset's values for the Chas River are either 1 or 0, meaning that homes that are close to the river are given a value of 1, otherwise 0. Therefore, the value of houses that are not bounded by a river will not change by any amount.
+
+
+#(c) Finding which of the variables are statistically important:
+
+#All the variables including crime rate,proportion of residential land zoned for lots over 25,000 sq.ft,the local pupil-teacher ratio,the tract bounds Chas River are statistically important as they have very low p value
+
+#(d)Determining the order of importance of the 4 variables using ANOVA analysis:
+```{r}
+variables<-anova(model4)
+variables
+```
+#The importance of variables can be determined by their Sum of Squares value. Higher the Sum of squares, the more important is the variable in estimating the value of a dependent variable
+
+#Order of importance of variables:
+
+#1.crime rate by town-6440.8
+
+#2.pupil-teacher ratio by town-4709.5
+
+#3.n-proportion of residential land zoned for lots over 25,000 sq.ft.-3554.3
+
+#4. the tract bounds along the Charles River (chas) - 667.2
+
+
+
+
